@@ -15,12 +15,12 @@ namespace Assets.Scripts.UIInteractions
             var spd = GameManager.instance.car.CurrentRPM;
             if (GameManager.instance.car.CurrentRPM > GameManager.instance.car.CarTemplate.MaxRPM)
                 spd = GameManager.instance.car.CarTemplate.MaxRPM;
-            Cursor.transform.rotation = Quaternion.Lerp(Cursor.transform.rotation,Quaternion.Euler(0, 0, GetSpeedRotation(spd, GameManager.instance.car.CarTemplate.MaxRPM)), Time.deltaTime);
+            Cursor.transform.localRotation = Quaternion.Lerp(Cursor.transform.localRotation,Quaternion.Euler(0, 0, -GetSpeedRotation(spd, GameManager.instance.car.CarTemplate.MaxRPM)), Time.deltaTime);
 
         }
         public override void SetSpeedText()
         {
-            SpeedText.text = "Gear: " + (GameManager.instance.car.GearIndex + 1) + " Rpm: " + Mathf.FloorToInt(GameManager.instance.car.CurrentRPM).ToString();
+            SpeedText.text = "Gear: " + (GameManager.instance.car.gear.GearIndex + 1) + " Rpm: " + Mathf.FloorToInt(GameManager.instance.car.CurrentRPM).ToString();
         }
     }
 }

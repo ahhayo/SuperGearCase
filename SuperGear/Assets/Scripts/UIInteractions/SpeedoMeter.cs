@@ -28,7 +28,7 @@ namespace Assets.Scripts.UIInteractions
             var spd = GameManager.instance.car.CurrentSpeed;
             if (GameManager.instance.car.CurrentSpeed > GameManager.instance.car.CarTemplate.MaxSpeed)
                 spd = GameManager.instance.car.CarTemplate.MaxSpeed;
-            Cursor.transform.eulerAngles = new Vector3(0, 0, GetSpeedRotation(spd, GameManager.instance.car.CarTemplate.MaxSpeed));
+            Cursor.transform.localEulerAngles = new Vector3(0, 0, -GetSpeedRotation(spd, GameManager.instance.car.CarTemplate.MaxSpeed));
         }
         /// <summary>
         /// Calculate the Cursor new Position
