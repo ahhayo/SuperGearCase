@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
 using TMPro;
+
 namespace Assets.Scripts.UIInteractions
 {
-    public class SpeedoMeter : MonoBehaviour
+    public class SpeedoMeter : MonoBehaviour 
     {
+        public bool UseMPH = false;
         public GameObject Cursor;
 
         [Header("Cursor Min Max Rotations")]
-        [SerializeField]private float maxSpeedAngle = -125;
-        [SerializeField]private float minSpeedAngle = 125;
+        [SerializeField] private float maxSpeedAngle = -125;
+        [SerializeField] private float minSpeedAngle = 125;
 
         public TextMeshProUGUI SpeedText;
+        public TextMeshProUGUI CenterSpeedoMeterText;
 
         private void Update()
         {
@@ -20,7 +23,19 @@ namespace Assets.Scripts.UIInteractions
 
         public virtual void SetSpeedText()
         {
-            SpeedText.text = Mathf.FloorToInt(GameManager.instance.car.CurrentSpeed).ToString();
+            if (!UseMPH)
+            {
+                var Txt = Mathf.CeilToInt(GameManager.instance.car.CurrentSpeed).ToString() + " KMH";
+                SpeedText.text = Txt;
+                CenterSpeedoMeterText.text = Txt;
+            }
+            else
+            {
+                var Txt = Mathf.CeilToInt(GameManager.instance.car.CurrentSpeed * 0.62f).ToString() + "MPH";
+                SpeedText.text = Txt;
+                CenterSpeedoMeterText.text = Txt;
+            }
+
         }
 
         public virtual void SetCursor()

@@ -1,38 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.CarParts
 {
     [RequireComponent(typeof(AudioSource))]
     public class Engine : MonoBehaviour
     {
-        private Car car;
-        [SerializeField] private AudioSource EngineSource;
+        public Car Car;
+        private AudioSource EngineAudioSource;
+        [Range(-3,0)]
+        [SerializeField] private float minPitch=0;
+        [Range(0,3)]
+        [SerializeField] private float maxPitch=3;
 
         private void Start()
         {
-            car = GameManager.instance.car;
-            if (!EngineSource)
-                EngineSource = GetComponent<AudioSource>();
-            EngineSource.clip = car.CarTemplate.EngineSound;
-            EngineSource.Play();
+            if (!Car)
+                Car = GetComponent<Car>();
+
+            if (!EngineAudioSource)
+                EngineAudioSource = GetComponent<AudioSource>();
+            EngineAudioSource.loop = true;
+            EngineAudioSource.clip = Car.CarTemplate.EngineSound;
+            EngineAudioSource.Play();
         }
         private void FixedUpdate()
         {
-            if (car.canMove)
-                car.transform.position = car.transform.position + Vector3.forward * car.CurrentSpeed * Time.deltaTime;
+            if (Car.canMove)
+                Car.transform.position = Car.transform.position + Vector3.forward * Car.CurrentSpeed * Time.deltaTime;
 
             EngineSoundControl();
         }
 
-        public void EngineSoundControl()
+        private void EngineSoundControl() //TODO: rpm 0 oldugu durumu hesapla.
         {
-            var val = 1 + (car.CurrentRPM / car.CarTemplate.MaxRPM);
-            EngineSource.pitch = val;
+            var rat =  (Car.CurrentRPM / Car.CarTemplate.MaxRPM); //current rpm ratio-> between 0-1
+            if (rat == 0)
+                rat = 0.01f;
+            var pitchValue = minPitch + ((maxPitch - minPitch) * rat);//rpm ratio to pitch ratio.
+            EngineAudioSource.pitch = pitchValue;
         }
     }
 }

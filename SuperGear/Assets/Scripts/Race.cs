@@ -13,7 +13,7 @@ namespace Assets.Scripts
         public bool RaceStarted
         {
             get { return raceStarted; }
-            set
+            private set
             {
                 raceStarted = value;
                 RaceBegan?.Invoke();
@@ -21,36 +21,47 @@ namespace Assets.Scripts
         }
         public Action RaceBegan;
         public Action RaceEnd;
-        private bool raceEnd;
+        public Action<float> CountDownChanged;
+
+        private bool raceEnded;
+        public int Score { get { return (int)GameManager.instance.UIManager.raceTimer.Elapsed.TotalMilliseconds; } }
 
         public bool RaceEnded
         {
-            get { return raceEnd; }
+            get { return raceEnded; }
             set
             {
-                raceEnd = value;
+                raceEnded = value;
                 RaceEnd?.Invoke();
-                Time.timeScale = 0;
             }
         }
 
 
+        private Stopwatch CounterStopWatch = new Stopwatch();
+        [SerializeField] private int CountdownAmount = 5;
 
-        public Stopwatch CounterStopWatch = new Stopwatch();
-        public int CountdownAmount = 5;
+        private void Start()
+        {
+            RaceEnd += SendDataToLeaderBoard;
+        }
 
+        private void SendDataToLeaderBoard()
+        {
+            GameManager.instance.PlayfabManager.SendLeaderBoard(Score);
+        }
 
-        public IEnumerator RaceBeginCounter()
+        private IEnumerator RaceBeginCounter()
         {
             CounterStopWatch.Restart();
             while (CountdownAmount - CounterStopWatch.Elapsed.Seconds > 0)
             {
-                GameManager.instance.UIManager.counterText.text = (CountdownAmount - CounterStopWatch.Elapsed.Seconds).ToString();
+                GameManager.instance.UIManager.counterText.text = (CountdownAmount - CounterStopWatch.Elapsed.Seconds).ToString() + "!";
+                CountDownChanged?.Invoke((CountdownAmount * 1000f) - (float)CounterStopWatch.Elapsed.TotalMilliseconds);
                 yield return null;
             }
 
-            GameManager.instance.UIManager.counterText.text = "Başla!";
-            yield return new WaitForSeconds(1f);
+            GameManager.instance.UIManager.counterText.text = "GO!";
+            yield return new WaitForSeconds(0.25f);
             GameManager.instance.UIManager.counterText.gameObject.SetActive(false);
             RaceStarted = true;
         }

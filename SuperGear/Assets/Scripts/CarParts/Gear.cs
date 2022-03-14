@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.CarParts
@@ -7,64 +6,75 @@ namespace Assets.Scripts.CarParts
     public class Gear : MonoBehaviour
     {
 
-        private Car car;
+        public Car Car;
 
         [SerializeField] private int gearIndex;
-
         public int GearIndex
         {
             get { return gearIndex; }
-            set
+            private set
             {
                 gearIndex = value;
-                currentGear = car.CarTemplate.Gears[GearIndex];
-                car.GearChanged?.Invoke();
+                currentGear = Car.CarTemplate.Gears[GearIndex];
+                GameManager.instance.UIManager.GearText.text = gearIndex != 0 ? "Gear : " + (gearIndex).ToString() : "Gear : N";
+                Car.GearChanged?.Invoke();
             }
         }
         private GearTemplate currentGear;
 
         private void Start()
         {
-            car = GameManager.instance.car;
-            currentGear = car.CarTemplate.Gears.First();
+            if (!Car)
+                Car = GetComponent<Car>();
+            currentGear = Car.CarTemplate.Gears.First();
 
         }
         private void Update()
         {
+            Car.CurrentRPM = Mathf.Clamp(currentGear.GearRPMCurve.Evaluate(Car.CurrentSpeed), 0, Car.CarTemplate.MaxRPM);
+          
+            if (!GameManager.instance.Race.RaceStarted)
+                return;
+            if (GameManager.instance.Race.RaceEnded)
+                UseBrake();
 
             if (Input.GetKey(KeyCode.W))
-            {
-                car.CurrentSpeed+= currentGear.GearCurve.Evaluate(car.CurrentSpeed) * Time.deltaTime;
-            }
+                UseGas();
             else if (Input.GetKey(KeyCode.S))
-            {
-                car.CurrentSpeed -= Mathf.Clamp(car.CarTemplate.BrakeCurve.Evaluate(car.CurrentSpeed), 0, car.CurrentSpeed);
-                //TODO : Fren lambalarini yak;
-            }
+                UseBrake();
             else
             {
-
-                //if (currentSpeed > 0)
-                //    currentSpeed -= Mathf.Clamp(CarTemplate.BrakeCurve.Evaluate(currentSpeed)/100, 0, currentSpeed);
-                //else
-                //    currentSpeed = 0;
+                if (Car.CurrentSpeed > 0)
+                    Car.CurrentSpeed -= Mathf.Clamp(Car.CarTemplate.BrakeCurve.Evaluate(Car.CurrentSpeed) / 10f, 0, Car.CurrentSpeed);
+                else
+                    Car.CurrentSpeed = 0;
             }
 
-            car.CurrentRPM = Mathf.Clamp(currentGear.GearRPMCurve.Evaluate(car.CurrentSpeed), 0, car.CarTemplate.MaxRPM);
+            if (Input.GetKeyUp(KeyCode.S))
+                Car.UsingBrake = false;
 
-            if (!car.canMove)
+
+            if (!Car.canMove)
             {
                 return;
             }
 
-            if (car.CurrentRPM > currentGear.AutoGearUpRPM && car.CarTemplate.Gears.Count - 1 != GearIndex)
+            if (Car.CurrentRPM > currentGear.AutoGearUpRPM && Car.CarTemplate.Gears.Count - 1 != GearIndex)
                 GearIndex++;
 
-            if (car.CurrentRPM < currentGear.AutoGearDownRPM && GearIndex != 0) //simdilik 0dan gerisi yok ama normalde geri vites olmali.
+            if (Car.CurrentRPM < currentGear.AutoGearDownRPM && GearIndex != 0) //simdilik 0dan gerisi yok ama normalde geri vites olmali.
                 GearIndex--;
 
 
         }
-
+        private void UseGas()
+        {
+            Car.CurrentSpeed += currentGear.GearCurve.Evaluate(Car.CurrentSpeed) * Time.deltaTime;
+        }
+        private void UseBrake()
+        {
+            Car.CurrentSpeed -= Mathf.Clamp(Car.CarTemplate.BrakeCurve.Evaluate(Car.CurrentSpeed), 0, Car.CurrentSpeed);
+            Car.UsingBrake = true;
+        }
     }
 }

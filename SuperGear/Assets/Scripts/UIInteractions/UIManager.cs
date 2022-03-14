@@ -2,6 +2,7 @@
 using TMPro;
 using System;
 using System.Diagnostics;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.UIInteractions
 {
@@ -12,8 +13,10 @@ namespace Assets.Scripts.UIInteractions
 
         public TextMeshProUGUI counterText;
         public TextMeshProUGUI RaceTimeText;
-
-        private Stopwatch raceTimer = new Stopwatch();
+        public TextMeshProUGUI GearText;
+        public LeaderBoardUI LeaderBoardUI;
+        public Stopwatch raceTimer = new Stopwatch();
+        public Button CarLightsButton;
         private void Start()
         {
             GameManager.instance.Race.RaceBegan += OnRaceStarted;
@@ -29,9 +32,10 @@ namespace Assets.Scripts.UIInteractions
             raceTimer.Stop();
         }
 
-        private void Update()
+        private void LateUpdate()
         {
-            RaceTimeText.text = (raceTimer.Elapsed.Minutes).ToString() + " : " +(raceTimer.Elapsed.Seconds).ToString() + " : " + (raceTimer.Elapsed.Milliseconds).ToString();
+            TimeSpan ts = raceTimer.Elapsed;
+            RaceTimeText.text = ts.ToString("mm\\:ss\\:f");
         }
     }
 }
