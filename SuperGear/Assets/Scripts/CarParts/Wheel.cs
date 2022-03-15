@@ -23,8 +23,10 @@ namespace Assets.Scripts.CarParts
 
         private void RotateWheel()
         {
-            var rotationPerSecond = GameManager.instance.car.CurrentSpeed / WheelCircumference;
-            transform.Rotate((rotationPerSecond) * Time.deltaTime * 100, 0, 0);//*100 because m to cm.
+            //Tekerin dönüş açısı += 360 * (Son frame de aracın gittiği mesafe) / (tekerin çevresinin uzunluğu)
+            var distancePerFrame = Car.CurrentSpeed * Time.deltaTime;
+            var rotationAmount = 360 * distancePerFrame / WheelCircumference;
+            transform.Rotate(new Vector3(rotationAmount, 0, 0));
         }
     }
 

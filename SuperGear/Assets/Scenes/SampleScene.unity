@@ -9712,9 +9712,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c881e87a4597b040a0dcdb0a759ca9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DoAction: 0
-  RandomScaleMin: 0.8
-  RandomScaleMax: 1.6
 --- !u!4 &515160970 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4731548797671380, guid: 37bf6b4eaddee8d448771b63238e03d1, type: 3}
@@ -13418,6 +13415,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4731548797671380, guid: 37bf6b4eaddee8d448771b63238e03d1, type: 3}
   m_PrefabInstance: {fileID: 2086008827}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &753721119 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9039715857741047337, guid: 9a11e3699c6502947817fc3917453918, type: 3}
+  m_PrefabInstance: {fileID: 757276157195332714}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &753721124
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 753721119}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.35638434
+  m_Center: {x: 0.0000003874302, y: 0.00000011920932, z: -0.00000022351739}
 --- !u!1001 &753960552
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36297,6 +36312,18 @@ PrefabInstance:
     - target: {fileID: 757276157688522275, guid: 9a11e3699c6502947817fc3917453918, type: 3}
       propertyPath: m_Name
       value: YellowRacingCar
+      objectReference: {fileID: 0}
+    - target: {fileID: 1858932251238362201, guid: 9a11e3699c6502947817fc3917453918, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1858932251238362201, guid: 9a11e3699c6502947817fc3917453918, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1858932251238362201, guid: 9a11e3699c6502947817fc3917453918, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9a11e3699c6502947817fc3917453918, type: 3}
